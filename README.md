@@ -10,28 +10,34 @@
 - **슬랙 통합**: 보고서 자동 공유
 
 ## 분석 키워드
-- WSOP (World Series of Poker)
-- GG Poker
-- PokerStars
-- EPT (European Poker Tour)
-- WPT (World Poker Tour)
-- Triton Poker
-- Hustler
-- Poker
-- Holdem
+지정된 9개의 포커 관련 키워드만 사용:
+- `wsop` - World Series of Poker
+- `gg poker` - GG Poker
+- `pokerstars` - PokerStars
+- `ept` - European Poker Tour
+- `wpt` - World Poker Tour
+- `triton poker` - Triton Poker Series
+- `hustler` - Hustler Casino Live
+- `poker` - General Poker Content
+- `holdem` - Texas Hold'em
 
 ## 보고서 스케줄
+중복 보고 방지: 동일 기간에 대한 보고서는 한 번만 생성
+
 ### 일일 보고서
-- **시간**: 매일 오전 10시 (주말 제외)
-- **범위**: 당일 데이터
+- **시간**: 평일 오전 10시 (주말 제외)
+- **범위**: 당일(오늘) 데이터
+- **내용**: 각 키워드별 조회수 상위 10개 콘텐츠
 
 ### 주간 보고서
-- **시간**: 매주 월요일 오전 12시
-- **범위**: 전주 데이터
+- **시간**: 매주 월요일 정오 12시
+- **범위**: 전주(지난주) 데이터
+- **내용**: 주간 트렌드 분석 및 인사이트
 
 ### 월간 보고서
 - **시간**: 매월 첫째주 월요일 오후 2시
 - **범위**: 전월 데이터
+- **내용**: 월간 종합 분석 및 쇼츠 전략
 
 ## 수집 데이터
 - 콘텐츠 제목

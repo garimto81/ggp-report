@@ -7,6 +7,7 @@
 - **버전**: v1
 - **형식**: RESTful JSON API
 - **인증**: API Key (헤더: `X-API-Key`)
+- **타임존**: 모든 시간은 KST (UTC+9) 기준
 
 ### 응답 형식
 ```json
@@ -40,7 +41,7 @@
 일일 보고서 조회
 
 **Query Parameters:**
-- `date` (optional): YYYY-MM-DD 형식, 기본값은 오늘
+- `date` (optional): YYYY-MM-DD 형식, 기본값은 오늘 (KST 기준)
 
 **Response:**
 ```json
@@ -145,6 +146,14 @@
         "description": "World Series of Poker",
         "active": true,
         "priority": 1
+      },
+      {
+        "id": "kw_002",
+        "name": "gg poker",
+        "display_name": "GG Poker",
+        "description": "GG Poker Platform",
+        "active": true,
+        "priority": 2
       }
     ]
   }
