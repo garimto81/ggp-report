@@ -1,28 +1,29 @@
 {
-  "name": "auto-reporting-system",
+  "name": "camera-work-auto-report",
   "version": "1.0.0",
-  "description": "Slack, Firebase, Google Docs 등 다양한 소스에서 데이터를 분석하여 자동 리포트를 생성하는 시스템",
+  "description": "Firebase와 GitHub 데이터를 기반으로 카메라 파트 업무 보고서를 자동 생성하는 시스템",
   "main": "dist/index.js",
   "scripts": {
     "start": "node dist/index.js",
     "build": "tsc",
     "dev": "ts-node src/index.ts",
-    "test": "jest"
+    "test": "node test-run.js",
+    "test:firebase": "node firebase-test.js",
+    "test:docs": "node test-docs-v2.js"
   },
   "keywords": [
     "automation",
+    "camera",
     "reporting",
-    "slack",
     "google-docs",
     "firebase",
-    "gemini"
+    "gemini",
+    "github"
   ],
   "author": "Aiden Kim",
   "license": "MIT",
   "dependencies": {
     "@google/generative-ai": "^0.21.0",
-    "@slack/web-api": "^6.9.0",
-    "@supabase/supabase-js": "^2.39.0",
     "axios": "^1.6.5",
     "dotenv": "^16.3.1",
     "firebase": "^10.7.1",
@@ -32,11 +33,8 @@
     "node-cron": "^3.0.3"
   },
   "devDependencies": {
-    "@types/jest": "^29.5.0",
     "@types/node": "^20.10.6",
     "@types/node-cron": "^3.0.11",
-    "jest": "^29.7.0",
-    "ts-jest": "^29.1.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
   }

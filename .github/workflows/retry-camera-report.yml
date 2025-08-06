@@ -1,0 +1,36 @@
+name: Retry Camera Report on Failure
+
+on:
+  workflow_run:
+    workflows: ["Daily Camera Report"]
+    types:
+      - completed
+
+jobs:
+  retry-on-failure:
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Wait before retry
+      run: |
+        echo "Daily camera report failed. Waiting 1 hour before retry..."
+        sleep 3600
+    
+    - name: Trigger retry
+      uses: actions/github-script@v7
+      with:
+        github-token: ${{secrets.GITHUB_TOKEN}}
+        script: |
+          await github.rest.actions.createWorkflowDispatch({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            workflow_id: 'daily-camera-report.yml',
+            ref: 'main'
+          });
+          console.log('Retry triggered for camera report generation');
+    
+    - name: Log retry
+      run: |
+        echo "🔄 Camera report retry initiated at $(date)"
+        echo "Original run failed at: ${{ github.event.workflow_run.created_at }}"

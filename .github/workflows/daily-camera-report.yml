@@ -1,0 +1,57 @@
+name: Daily Camera Report
+
+on:
+  schedule:
+    # 평일 오전 10시 실행 (UTC 01:00 = KST 10:00)
+    - cron: '0 1 * * 1-5'
+  workflow_dispatch: # 수동 실행 가능
+
+jobs:
+  generate-report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Build project
+      run: npm run build
+    
+    - name: Check if weekend (skip on weekends)
+      id: check-weekend
+      run: |
+        day=$(date +%u)
+        if [ $day -eq 6 ] || [ $day -eq 7 ]; then
+          echo "is_weekend=true" >> $GITHUB_OUTPUT
+        else
+          echo "is_weekend=false" >> $GITHUB_OUTPUT
+        fi
+    
+    - name: Generate Camera Report
+      if: steps.check-weekend.outputs.is_weekend == 'false'
+      env:
+        GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        GOOGLE_SERVICE_ACCOUNT_KEY: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
+        GOOGLE_DOC_ID: ${{ secrets.GOOGLE_DOC_ID }}
+      run: |
+        echo "Starting camera report generation..."
+        npm start -- --run-once
+    
+    - name: Report Status
+      if: always()
+      run: |
+        if [ ${{ job.status }} == 'success' ]; then
+          echo "✅ Camera report generated successfully!"
+        else
+          echo "❌ Camera report generation failed. Check logs for details."
+        fi

@@ -1,0 +1,76 @@
+name: Test Camera Report System
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test-system:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Build project
+      run: npm run build
+    
+    - name: Test Firebase connection
+      run: |
+        echo "Testing Firebase connection..."
+        npm run test:firebase || {
+          echo "❌ Firebase connection test failed"
+          exit 1
+        }
+    
+    - name: Verify API keys
+      run: |
+        echo "Checking required API keys..."
+        
+        if [ -z "${{ secrets.GEMINI_API_KEY }}" ]; then
+          echo "❌ GEMINI_API_KEY is not set"
+          exit 1
+        else
+          echo "✅ GEMINI_API_KEY is set"
+        fi
+        
+        if [ -z "${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}" ]; then
+          echo "❌ GOOGLE_SERVICE_ACCOUNT_KEY is not set"
+          exit 1
+        else
+          echo "✅ GOOGLE_SERVICE_ACCOUNT_KEY is set"
+          # Validate JSON format
+          echo "${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}" | jq empty || {
+            echo "❌ GOOGLE_SERVICE_ACCOUNT_KEY is not valid JSON"
+            exit 1
+          }
+          echo "✅ GOOGLE_SERVICE_ACCOUNT_KEY is valid JSON"
+        fi
+    
+    - name: Run full system test
+      env:
+        GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        GOOGLE_SERVICE_ACCOUNT_KEY: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
+        GOOGLE_DOC_ID: ${{ secrets.GOOGLE_DOC_ID }}
+      run: |
+        echo "Running full camera report system test..."
+        npm test
+    
+    - name: Report test results
+      if: always()
+      run: |
+        if [ ${{ job.status }} == 'success' ]; then
+          echo "✅ All tests passed! Camera report system is ready."
+          echo "📄 Check your Google Docs for the test report."
+        else
+          echo "❌ Tests failed. Please check the logs above for details."
+        fi

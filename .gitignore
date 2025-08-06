@@ -1,34 +1,59 @@
-# Node.js / Build
+# Dependencies
 node_modules/
-dist/
-coverage/
-.cache/
+package-lock.json
 
-# Credentials & Tokens
+# Build output
+dist/
+*.js
+!test-*.js
+!demo-*.js
+
+# Environment variables
 .env
 .env.local
 .env.production
-credentials.json
-token.json
-google-credentials.json
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
 
 # Logs
 *.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-# OS / Editor specific
-.DS_Store
-.idea/
-.vscode/
+# Test coverage
+coverage/
+.nyc_output/
 
-# Organized folders (can be removed from git tracking if needed)
-test-scripts/
-docs-md/
+# Temporary files
+*.tmp
+*.temp
+.cache/
 
-# Submodules
-/SuperClaude/
-/claudia/
+# Backup files
+*.backup
+*-backup/
 
-# Vim swap files
-*.swp
-*.swo
-*~
+# Firebase
+.firebase/
+firebase-debug.log
+firestore-debug.log
+
+# Google credentials
+*.json
+!package.json
+!tsconfig.json
+!firebase.json
+
+# Exclude sensitive service account keys
+google-service-account-key.json
+service-account-key.json
+credentials.json
