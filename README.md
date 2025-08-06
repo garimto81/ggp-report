@@ -1,5 +1,7 @@
 # Camera Work Auto Report
 
+[![Daily Camera Report](https://github.com/garimto81/ggp-report/actions/workflows/daily-camera-report.yml/badge.svg)](https://github.com/garimto81/ggp-report/actions/workflows/daily-camera-report.yml)
+
 Firebase와 GitHub 데이터를 기반으로 카메라 파트의 일일 업무 보고서를 자동으로 생성하는 시스템입니다.
 
 ## 🚀 주요 기능
@@ -107,7 +109,7 @@ GOOGLE_DOC_ID=your-google-doc-id
 npm start -- --run-once
 
 # 또는 직접 실행
-node dist/index.js --camera-report --run-once
+node dist/index.js --run-once
 ```
 
 ### 자동 실행

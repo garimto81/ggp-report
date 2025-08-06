@@ -27,31 +27,39 @@ jobs:
     - name: Build project
       run: npm run build
     
-    - name: Check if weekend (skip on weekends)
-      id: check-weekend
+    - name: Check if weekday
+      id: weekday_check
       run: |
-        day=$(date +%u)
-        if [ $day -eq 6 ] || [ $day -eq 7 ]; then
-          echo "is_weekend=true" >> $GITHUB_OUTPUT
+        DAY_OF_WEEK=$(date +%u)
+        echo "📅 오늘은 $(date +'%Y-%m-%d %A')입니다."
+        if [ $DAY_OF_WEEK -ge 1 ] && [ $DAY_OF_WEEK -le 5 ]; then
+          echo "is_weekday=true" >> $GITHUB_OUTPUT
+          echo "✅ 평일입니다. 보고서를 생성합니다."
         else
-          echo "is_weekend=false" >> $GITHUB_OUTPUT
+          echo "is_weekday=false" >> $GITHUB_OUTPUT
+          echo "🚫 주말입니다. 보고서를 생성하지 않습니다."
         fi
     
     - name: Generate Camera Report
-      if: steps.check-weekend.outputs.is_weekend == 'false'
+      if: steps.weekday_check.outputs.is_weekday == 'true'
       env:
         GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         GOOGLE_SERVICE_ACCOUNT_KEY: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
         GOOGLE_DOC_ID: ${{ secrets.GOOGLE_DOC_ID }}
+        TZ: Asia/Seoul
       run: |
-        echo "Starting camera report generation..."
+        echo "🚀 카메라 파트 일일 보고서 생성 시작..."
+        echo "📅 날짜: $(date +'%Y-%m-%d %H:%M:%S')"
         npm start -- --run-once
     
     - name: Report Status
       if: always()
       run: |
-        if [ ${{ job.status }} == 'success' ]; then
-          echo "✅ Camera report generated successfully!"
+        if [ "${{ job.status }}" == "success" ]; then
+          echo "✅ 일일 보고서가 성공적으로 생성되었습니다!"
+          echo "📄 Google Docs 확인: https://docs.google.com/document/d/${{ secrets.GOOGLE_DOC_ID }}/"
+          echo "⏰ 다음 실행: 다음 평일 오전 10시"
         else
-          echo "❌ Camera report generation failed. Check logs for details."
+          echo "❌ 보고서 생성 실패"
+          echo "🔄 1시간 후 재시도됩니다"
         fi

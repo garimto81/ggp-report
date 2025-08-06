@@ -14,7 +14,8 @@ jobs:
     steps:
     - name: Wait before retry
       run: |
-        echo "Daily camera report failed. Waiting 1 hour before retry..."
+        echo "🕐 이전 실행 실패. 1시간 후 재시도합니다..."
+        echo "⏰ 대기 시작: $(date +'%Y-%m-%d %H:%M:%S')"
         sleep 3600
     
     - name: Trigger retry
@@ -28,9 +29,9 @@ jobs:
             workflow_id: 'daily-camera-report.yml',
             ref: 'main'
           });
-          console.log('Retry triggered for camera report generation');
+          console.log('🔄 카메라 보고서 재시도 트리거됨');
     
     - name: Log retry
       run: |
-        echo "🔄 Camera report retry initiated at $(date)"
-        echo "Original run failed at: ${{ github.event.workflow_run.created_at }}"
+        echo "🔄 카메라 파트 보고서 재시도 시작: $(date)"
+        echo "📝 원래 실행 실패 시간: ${{ github.event.workflow_run.created_at }}"
